@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>home</class>
+ <widget class="QWidget" name="home">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>741</width>
+    <height>481</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Alo App</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: rgb(255, 255, 255);</string>
+  </property>
+  <widget class="QListWidget" name="chatListWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>80</y>
+     <width>211</width>
+     <height>401</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 1px solid rgb(210, 210, 210); </string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>1</number>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOn</enum>
+   </property>
+   <property name="verticalScrollMode">
+    <enum>QAbstractItemView::ScrollPerItem</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="topLeftWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>211</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 1px solid rgb(210, 210, 210);</string>
+   </property>
+   <widget class="QWidget" name="searchWidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>191</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid rgb(210, 210, 210); border-radius: 10px</string>
+    </property>
+    <widget class="QLineEdit" name="inputSearch">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>1</y>
+       <width>141</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>HoloLens MDL2 Assets</family>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border: 0px; border-radius: 0px;</string>
+     </property>
+     <property name="text">
+      <string>Enter for searching ...</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnSearch">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>0</y>
+       <width>31</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../asset/icon/search.svg</normaloff>../asset/icon/search.svg</iconset>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="btnAddGroup">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>10</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/add_group.svg</normaloff>../asset/icon/add_group.svg</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnAddFriend">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>10</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/add_friend.svg</normaloff>../asset/icon/add_friend.svg</iconset>
+    </property>
+   </widget>
+   <widget class="QLabel" name="imgAvatar">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>5</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AVT</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="topRightWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>0</y>
+     <width>531</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 1px solid rgb(210, 210, 210);</string>
+   </property>
+   <widget class="QPushButton" name="btnData">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>10</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/data.svg</normaloff>../asset/icon/data.svg</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnCall">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>10</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/call.svg</normaloff>../asset/icon/call.svg</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnVideoCall">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>10</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/video_cam.svg</normaloff>../asset/icon/video_cam.svg</iconset>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblChatName1">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>10</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Name</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="imgAvatar1">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>5</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AVT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnAddGroup1">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>10</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/add_group.svg</normaloff>../asset/icon/add_group.svg</iconset>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QListWidget" name="msgListWidget">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>40</y>
+     <width>531</width>
+     <height>411</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: rgb(200, 220, 200); border: 2px solid rgb(210, 210, 210)</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>1</number>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOn</enum>
+   </property>
+   <property name="verticalScrollMode">
+    <enum>QAbstractItemView::ScrollPerItem</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="chatMsgWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>50</y>
+     <width>491</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(0,0,0,0)</string>
+   </property>
+   <widget class="QLabel" name="imgAvatar3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid rgb(210, 210, 210); background-color: white</string>
+    </property>
+    <property name="text">
+     <string>AVT</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="txtYourMsg_2">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>0</y>
+      <width>391</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: white; border: none;border-radius: 10px; padding: 5px;</string>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="yourChatMsgWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>90</y>
+     <width>491</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(0,0,0,0)</string>
+   </property>
+   <widget class="QLabel" name="txtYourMsg">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>0</y>
+      <width>391</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 160, 180); border: none;border-radius: 10px; padding: 5px; color: white</string>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="bottomWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>450</y>
+     <width>531</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 1px solid rgb(210, 210, 210);</string>
+   </property>
+   <widget class="QPushButton" name="btnSend">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>5</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/send.svg</normaloff>../asset/icon/send.svg</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnIcon">
+    <property name="geometry">
+     <rect>
+      <x>435</x>
+      <y>5</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/icon.svg</normaloff>../asset/icon/icon.svg</iconset>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="inputMsg">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>5</y>
+      <width>416</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none; border-bottom: 1px solid rgb(230, 230, 230);</string>
+    </property>
+    <property name="text">
+     <string>Enter message ...</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="chatItemWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>90</y>
+     <width>171</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <widget class="QLabel" name="imgAvatar2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid rgb(210, 210, 210);</string>
+    </property>
+    <property name="text">
+     <string>AVT</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblChatName2">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>5</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Name</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
