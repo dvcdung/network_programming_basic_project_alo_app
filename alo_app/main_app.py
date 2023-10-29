@@ -1,16 +1,18 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from ui.home_ui import Ui_home
-
-class HomeUI(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.ui = Ui_home()
-        self.ui.setupUi(self)
+from modules.home import HomeUI
+from modules.log import LogUI
+from networks.app_network import Net
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    home = HomeUI()
-    home.show()
-    sys.exit(app.exec_())
+    net = Net()
     
+    log_ui = LogUI(net)
+    home_ui = HomeUI(net)
+
+    log_ui.home_ui = home_ui
+    home_ui.log_ui = log_ui
+
+    log_ui.show()
+    sys.exit(app.exec_())
