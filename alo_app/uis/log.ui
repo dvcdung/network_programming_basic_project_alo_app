@@ -168,8 +168,50 @@
      <string>TextLabel</string>
     </property>
    </widget>
+   <widget class="QLabel" name="changeRegisterLbl">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>330</y>
+      <width>131</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Already have an account?</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnRegisterWidget">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>330</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">backgrouNd-color: rgba(0, 150, 150, 150); color: white;</string>
+    </property>
+    <property name="text">
+     <string>Register</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QWidget" name="registerWidget" native="true">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -359,6 +401,45 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="changeLoginLbl">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>330</y>
+      <width>131</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Don't have any accounts?</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnLoginWidget">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>330</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">backgrouNd-color: rgba(0, 150, 150, 150); color: white;</string>
+    </property>
+    <property name="text">
+     <string>LOGIN</string>
     </property>
    </widget>
   </widget>

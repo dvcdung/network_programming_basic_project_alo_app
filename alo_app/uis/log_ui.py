@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'alo_app\uis\log.ui'
+# Form implementation generated from reading ui file 'uis\log.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.10
 #
@@ -68,7 +68,21 @@ class Ui_Log(object):
         self.warningLabel.setFont(font)
         self.warningLabel.setStyleSheet("padding: 0px; color: red")
         self.warningLabel.setObjectName("warningLabel")
+        self.changeRegisterLbl = QtWidgets.QLabel(self.loginWidget)
+        self.changeRegisterLbl.setEnabled(True)
+        self.changeRegisterLbl.setGeometry(QtCore.QRect(100, 330, 131, 16))
+        self.changeRegisterLbl.setObjectName("changeRegisterLbl")
+        self.btnRegisterWidget = QtWidgets.QPushButton(self.loginWidget)
+        self.btnRegisterWidget.setGeometry(QtCore.QRect(230, 330, 51, 21))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        self.btnRegisterWidget.setFont(font)
+        self.btnRegisterWidget.setStyleSheet("backgrouNd-color: rgba(0, 150, 150, 150); color: white;")
+        self.btnRegisterWidget.setObjectName("btnRegisterWidget")
         self.registerWidget = QtWidgets.QWidget(Log)
+        self.registerWidget.setEnabled(True)
         self.registerWidget.setGeometry(QtCore.QRect(0, 0, 371, 361))
         self.registerWidget.setStyleSheet("background-color: rgb(250,250,250)")
         self.registerWidget.setObjectName("registerWidget")
@@ -133,6 +147,19 @@ class Ui_Log(object):
         self.inputRegisterRePassword.setStyleSheet("border: 1px solid rgb(0, 150, 150); border-radius: 15px; padding: 7px; ")
         self.inputRegisterRePassword.setText("")
         self.inputRegisterRePassword.setObjectName("inputRegisterRePassword")
+        self.changeLoginLbl = QtWidgets.QLabel(self.registerWidget)
+        self.changeLoginLbl.setEnabled(True)
+        self.changeLoginLbl.setGeometry(QtCore.QRect(100, 330, 131, 16))
+        self.changeLoginLbl.setObjectName("changeLoginLbl")
+        self.btnLoginWidget = QtWidgets.QPushButton(self.registerWidget)
+        self.btnLoginWidget.setGeometry(QtCore.QRect(230, 330, 41, 21))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        font.setBold(False)
+        font.setWeight(50)
+        self.btnLoginWidget.setFont(font)
+        self.btnLoginWidget.setStyleSheet("backgrouNd-color: rgba(0, 150, 150, 150); color: white;")
+        self.btnLoginWidget.setObjectName("btnLoginWidget")
 
         self.retranslateUi(Log)
         QtCore.QMetaObject.connectSlotsByName(Log)
@@ -145,12 +172,16 @@ class Ui_Log(object):
         self.passwordLabel.setText(_translate("Log", "Password:"))
         self.btnLogin.setText(_translate("Log", "LOGIN"))
         self.warningLabel.setText(_translate("Log", "TextLabel"))
+        self.changeRegisterLbl.setText(_translate("Log", "Already have an account?"))
+        self.btnRegisterWidget.setText(_translate("Log", "Register"))
         self.registerTitle.setText(_translate("Log", "REGISTER"))
         self.usernameLabel1.setText(_translate("Log", "Username:"))
         self.passwordLabel1.setText(_translate("Log", "Password:"))
         self.btnRegister.setText(_translate("Log", "REGISTER"))
         self.warningLabel1.setText(_translate("Log", "TextLabel"))
         self.repasswordLabel1.setText(_translate("Log", "Re-Password:"))
+        self.changeLoginLbl.setText(_translate("Log", "Don\'t have any accounts?"))
+        self.btnLoginWidget.setText(_translate("Log", "LOGIN"))
 
 
 if __name__ == "__main__":
