@@ -13,6 +13,6 @@ if __name__ == "__main__":
 
     log_ui.home_ui = home_ui
     home_ui.log_ui = log_ui
-
+    
     log_ui.show()
     sys.exit(app.exec_())

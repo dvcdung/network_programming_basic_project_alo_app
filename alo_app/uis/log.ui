@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>371</width>
-    <height>361</height>
+    <height>476</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>0</x>
      <y>0</y>
      <width>371</width>
-     <height>361</height>
+     <height>476</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -217,7 +217,7 @@
      <x>0</x>
      <y>0</y>
      <width>371</width>
-     <height>361</height>
+     <height>476</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -289,7 +289,7 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>140</y>
+      <y>255</y>
       <width>271</width>
       <height>16</height>
      </rect>
@@ -310,7 +310,7 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>160</y>
+      <y>275</y>
       <width>271</width>
       <height>31</height>
      </rect>
@@ -326,7 +326,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>290</y>
+      <y>395</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -349,7 +349,7 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>260</y>
+      <y>370</y>
       <width>271</width>
       <height>20</height>
      </rect>
@@ -370,7 +370,7 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>200</y>
+      <y>315</y>
       <width>271</width>
       <height>16</height>
      </rect>
@@ -391,7 +391,7 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>220</y>
+      <y>335</y>
       <width>271</width>
       <height>31</height>
      </rect>
@@ -410,7 +410,7 @@
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>330</y>
+      <y>435</y>
       <width>131</width>
       <height>16</height>
      </rect>
@@ -423,7 +423,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>330</y>
+      <y>435</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -440,6 +440,80 @@
     </property>
     <property name="text">
      <string>LOGIN</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="displaynameLabel1">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>140</y>
+      <width>271</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 150, 150)</string>
+    </property>
+    <property name="text">
+     <string>Display name:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="inputDisplayName">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>160</y>
+      <width>271</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid rgb(0, 150, 150); border-radius: 15px; padding: 7px; </string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="phoneLabel1">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>200</y>
+      <width>271</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 150, 150)</string>
+    </property>
+    <property name="text">
+     <string>Phone:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="inputPhone">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>220</y>
+      <width>271</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid rgb(0, 150, 150); border-radius: 15px; padding: 7px; </string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

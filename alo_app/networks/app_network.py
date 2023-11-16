@@ -14,6 +14,7 @@ class Net():
     def disconnect_to_server(self):
         if self.client_socket:
             self.client_socket.close()
+            self.client_socket = None
         
     def send_to_server(self, id, data):
         if self.client_socket:
