@@ -384,7 +384,7 @@
       <normaloff>../asset/icon/send.svg</normaloff>../asset/icon/send.svg</iconset>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnIcon">
+   <widget class="QPushButton" name="btnAttachFile">
     <property name="geometry">
      <rect>
       <x>435</x>
@@ -401,7 +401,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../asset/icon/icon.svg</normaloff>../asset/icon/icon.svg</iconset>
+      <normaloff>../asset/icon/attach_file.svg</normaloff>../asset/icon/attach_file.svg</iconset>
     </property>
    </widget>
    <widget class="QLineEdit" name="inputMsg">
@@ -409,7 +409,7 @@
      <rect>
       <x>10</x>
       <y>5</y>
-      <width>416</width>
+      <width>371</width>
       <height>20</height>
      </rect>
     </property>
@@ -421,6 +421,26 @@
     </property>
     <property name="placeholderText">
      <string>Enter message ...</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnIcon">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>5</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 5px; background-color: rgb(240, 240, 240);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../asset/icon/icon.svg</normaloff>../asset/icon/icon.svg</iconset>
     </property>
    </widget>
   </widget>

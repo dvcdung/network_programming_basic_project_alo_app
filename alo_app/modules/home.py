@@ -1,3 +1,4 @@
+import typing
 from PyQt5 import QtCore, QtGui, QtWidgets
 from uis.home_ui import Ui_home
 from networks.app_network import Net
@@ -28,9 +29,12 @@ class LoadMsgsThread(QThread):
         self.net.send_to_server("0010", f"{self.session_id}")
         sv_status, sv_data = self.net.receive_from_server()
         if sv_status == "OK":
-            msgs = json.loads(sv_data)
-            return msgs
-        elif sv_data == "EMPTY":
+            try:
+                msgs = json.loads(sv_data)
+                return msgs
+            except:
+                pass
+        elif str(sv_data) == "EMPTY":
             return []
         return []
 
@@ -44,6 +48,11 @@ class HomeUI(QtWidgets.QMainWindow):
         self.ui.btnLogout.clicked.connect(partial(self.logout, net))
         self.ui.btnSearch.clicked.connect(partial(self.findUsers, net))
         self.ui.inputSearch.textChanged.connect(partial(self.findUsers, net))
+
+    def keyPressEvent(self, event):
+        key = event.key()
+        if key == 16777220:
+            self.ui.btnSend.click()
 
     def logout(self, net: Net):
         username = self.userData[1]
@@ -134,7 +143,7 @@ class HomeUI(QtWidgets.QMainWindow):
 
     def onClickChatItem(self, item, net, chatsFound):
         index = self.ui.chatListWidget.row(item)
-        chatName = self.ui.lblChatName1.text()
+        # chatName = self.ui.lblChatName1.text()
         # if (str(chatsFound[index]["session_name"]) != str(chatName)):
         self.ui.imgAvatar1.setText(chatsFound[index]["session_name"][:3])
         self.ui.lblChatName1.setText(chatsFound[index]["session_name"])
@@ -216,3 +225,4 @@ class HomeUI(QtWidgets.QMainWindow):
                 pass
             else:
                 pass
+            self.ui.inputMsg.setText("")
