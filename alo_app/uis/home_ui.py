@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'uis\home.ui'
+# Form implementation generated from reading ui file './uis/home.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.10
 #
@@ -48,7 +48,7 @@ class Ui_home(object):
         self.btnSearch.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnSearch.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("uis\\../asset/icon/search.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/search.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnSearch.setIcon(icon)
         self.btnSearch.setObjectName("btnSearch")
         self.btnAddGroup = QtWidgets.QPushButton(self.topLeftWidget)
@@ -56,7 +56,7 @@ class Ui_home(object):
         self.btnAddGroup.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnAddGroup.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("uis\\../asset/icon/add_group.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/add_group.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnAddGroup.setIcon(icon1)
         self.btnAddGroup.setObjectName("btnAddGroup")
         self.imgAvatar = QtWidgets.QLabel(self.topLeftWidget)
@@ -84,7 +84,7 @@ class Ui_home(object):
         self.btnData.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnData.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("uis\\../asset/icon/data.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/data.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnData.setIcon(icon2)
         self.btnData.setObjectName("btnData")
         self.btnCall = QtWidgets.QPushButton(self.topRightWidget)
@@ -92,7 +92,7 @@ class Ui_home(object):
         self.btnCall.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnCall.setText("")
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("uis\\../asset/icon/call.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/call.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnCall.setIcon(icon3)
         self.btnCall.setObjectName("btnCall")
         self.btnVideoCall = QtWidgets.QPushButton(self.topRightWidget)
@@ -100,7 +100,7 @@ class Ui_home(object):
         self.btnVideoCall.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnVideoCall.setText("")
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap("uis\\../asset/icon/video_cam.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/video_cam.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnVideoCall.setIcon(icon4)
         self.btnVideoCall.setObjectName("btnVideoCall")
         self.lblChatName1 = QtWidgets.QLabel(self.topRightWidget)
@@ -144,7 +144,7 @@ class Ui_home(object):
         self.btnSend.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnSend.setText("")
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap("uis\\../asset/icon/send.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/send.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnSend.setIcon(icon5)
         self.btnSend.setObjectName("btnSend")
         self.btnAttachFile = QtWidgets.QPushButton(self.bottomWidget)
@@ -152,7 +152,7 @@ class Ui_home(object):
         self.btnAttachFile.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnAttachFile.setText("")
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap("uis\\../asset/icon/attach_file.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/attach_file.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnAttachFile.setIcon(icon6)
         self.btnAttachFile.setObjectName("btnAttachFile")
         self.inputMsg = QtWidgets.QLineEdit(self.bottomWidget)
@@ -165,7 +165,7 @@ class Ui_home(object):
         self.btnIcon.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnIcon.setText("")
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap("uis\\../asset/icon/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnIcon.setIcon(icon7)
         self.btnIcon.setObjectName("btnIcon")
         self.toolsWidget = QtWidgets.QWidget(home)
@@ -177,7 +177,7 @@ class Ui_home(object):
         self.btnLogout.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
         self.btnLogout.setText("")
         icon8 = QtGui.QIcon()
-        icon8.addPixmap(QtGui.QPixmap("uis\\../asset/icon/logout.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon8.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/logout.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnLogout.setIcon(icon8)
         self.btnLogout.setObjectName("btnLogout")
 

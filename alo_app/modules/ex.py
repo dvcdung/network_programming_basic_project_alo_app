@@ -1,45 +1,40 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
+import webbrowser
 
-class EmojiTable(QWidget):
+class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
-        layout = QVBoxLayout()
+    def init_ui(self):
+        # Tạo nút
+        btn_open_url = QPushButton('Mở trình duyệt Chrome', self)
 
-        # Tạo QTableWidget để hiển thị bảng emoji
-        self.emoji_table = QTableWidget(self)
-        self.emoji_table.setRowCount(2)  # Số dòng
-        self.emoji_table.setColumnCount(3)  # Số cột
+        # Kết nối sự kiện click của nút đến hàm xử lý
+        btn_open_url.clicked.connect(self.open_url_in_browser)
 
-        # Đặt emoji vào các ô trong bảng
-        emojis = ['😊', '❤️', '🎉', '👍', '🌟', '🔥']
-        for row in range(2):
-            for col in range(3):
-                emoji_item = QTableWidgetItem(emojis[row * 3 + col])
-                self.emoji_table.setItem(row, col, emoji_item)
+        # Tạo layout và thêm nút vào layout
+        layout = QVBoxLayout(self)
+        layout.addWidget(btn_open_url)
 
-        # Kết nối sự kiện khi chọn emoji
-        self.emoji_table.cellClicked.connect(self.add_emoji_to_message)
-
-        layout.addWidget(self.emoji_table)
-
+        # Đặt layout cho cửa sổ chính
         self.setLayout(layout)
-        self.setWindowTitle('Emoji Table')
 
-    def add_emoji_to_message(self, row, col):
-        # Lấy emoji từ ô được chọn và thêm vào QLineEdit hoặc nơi khác
-        selected_emoji_item = self.emoji_table.item(row, col)
-        selected_emoji = selected_emoji_item.text()
+        # Thiết lập kích thước và tiêu đề cửa sổ
+        self.setGeometry(300, 300, 300, 150)
+        self.setWindowTitle('Mở URL trong trình duyệt Chrome')
+        
+    def open_url_in_browser(self):
+        # Đường link URL bạn muốn mở
+        url_to_open = 'https://www.google.com'
 
-        # Bạn có thể thêm emoji vào QLineEdit hoặc nơi khác theo yêu cầu của bạn
-        print(f'Selected Emoji: {selected_emoji}')
+        # Mở đường link URL trong trình duyệt Chrome
+        webbrowser.open(url_to_open)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    emoji_table = EmojiTable()
-    emoji_table.show()
+    main_window = MainWindow()
+    main_window.show()
     sys.exit(app.exec_())

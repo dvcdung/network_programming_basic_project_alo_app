@@ -1,49 +1,22 @@
 import os
 import socket
 import threading
-import datetime
 import mysql
-import re
 import json
 from database import DB
+from services.file_service import FileService
 
 # Định nghĩa thư mục chứa dữ liệu của các tài khoản
 DATA_DIR = "server_data"
 IP_ADDR = "127.0.0.1"
 PORT_NUM = 12345
 db = DB()
+jfs = FileService()
 onlineUsers = {}
 
 # Tạo thư mục chứa dữ liệu
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
-def is_folder_exists(folder_name):
-    folder_path = os.path.join(DATA_DIR, folder_name)
-    return os.path.exists(folder_path)
-def write_to_file(folder_name, file_name, content):
-    with open(os.path.join(DATA_DIR, folder_name, f"{file_name}.txt"), 'w') as file:
-        file.write(content)
-def read_from_file(folder_name, file_name):
-    with open(os.path.join(DATA_DIR, folder_name, file_name), 'r') as file:
-        return file.read()
-def create_folder(folder_name):
-    os.makedirs(os.path.join(DATA_DIR, folder_name))
-# Hàm để lấy ngày tạo của file
-def get_creation_time(file_path):
-    try:
-        # Lấy thời gian tạo của file và chuyển đổi thành đối tượng datetime
-        created_time = os.path.getctime(file_path)
-        created_time = datetime.datetime.fromtimestamp(created_time)
-        return created_time
-    except OSError:
-        # Trong trường hợp không thể lấy thông tin ngày tạo, trả về None
-        return None
-def get_file_list(mail_addr):
-    folder_path = os.path.join(DATA_DIR, mail_addr)
-    file_list = os.listdir(folder_path)
-    # Sắp xếp danh sách các tệp tin theo ngày tạo bằng cách sử dụng hàm get_creation_time
-    sorted_files = sorted(file_list, key=lambda x: get_creation_time(os.path.join(folder_path, x)), reverse=True)
-    return sorted_files
 
 def handle_client(client_socket):
     try:
@@ -97,14 +70,14 @@ def handle_client(client_socket):
                             client_socket.send(f"OK:{json.dumps(chatsFound)}".encode())
                     except Exception:
                         client_socket.send("ER:Failed".encode())
-                elif id == "0010": # getMsgs
+                elif id == "0010": # get Msgs
                     session_id = data
                     try:
                         msgs = db.getMsgs(session_id)
                         if (not msgs):
                             client_socket.send("ER:EMPTY".encode())
                         else:
-                            msgs = [{"message_id": row[0],  "message_text": row[1], "sender_id": row[2],  "session_id": row[3],  "sent_at": str(row[4]), "sender_name": row[5]} for row in msgs]
+                            msgs = [{"type": row[0],"id": row[1],  "content": row[2], "sender_id": row[3], "sender_name": row[4],  "session_id": row[5],  "sent_at": str(row[6])} for row in msgs]
                             client_socket.send(f"OK:{json.dumps(msgs)}".encode())
                     except Exception:
                         client_socket.send("ER:Failed".encode())
@@ -115,6 +88,30 @@ def handle_client(client_socket):
                         client_socket.send(f"OK:Insert successfully".encode())
                     except Exception:
                         client_socket.send("ER:Failed".encode())
+                elif id == "0020": #Send file
+                    file_name, file_size, sender_id, session_id = data.split("|")
+                    try:
+                        file_name = jfs.insert_file(file_name, sender_id, session_id)
+                        received_data = 0
+                        with open(f"./server_data/{file_name}", "wb") as file:
+                            while received_data < int(file_size):
+                                data = client_socket.recv(1024)
+                                file.write(data)
+                                received_data += len(data)
+                        client_socket.send(f"OK:File sent successfully".encode())
+                    except Exception as e:
+                        print(e)
+                        client_socket.send("ER:Failed".encode())
+                elif id == "0021": #Download file
+                    file_name = data
+                    f_size = os.path.getsize(f"./server_data/{file_name}")
+                    f_name = jfs.decode_string(file_name).split("|")[0]
+                    client_socket.send(f"{f_name}|{f_size}".encode())
+                    with open(f"./server_data/{file_name}", 'rb') as file:
+                        for data in iter(lambda: file.read(1024), b''):
+                            client_socket.send(data)
+
+                    
     except ConnectionResetError:
         for username, (user_socket, _) in list(onlineUsers.items()):
             if (user_socket == client_socket):

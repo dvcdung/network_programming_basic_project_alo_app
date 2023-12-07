@@ -1,12 +1,11 @@
-import typing
 from PyQt5 import QtCore, QtGui, QtWidgets
 from uis.home_ui import Ui_home
 from networks.app_network import Net
 from functools import partial
-import time
+import os
 import json
         
-from PyQt5.QtCore import QThread, QTimer, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QMutexLocker, QMutex
 
 class LoadMsgsThread(QThread):
     update_signal = pyqtSignal(list)
@@ -15,17 +14,17 @@ class LoadMsgsThread(QThread):
         super(LoadMsgsThread, self).__init__()
         self.net = net
         self.session_id = session_id
+        self.mutex = QMutex()
 
     def run(self):
         while self.session_id:
-            msgs = self.load_msgs()
-            # Send a signal to main thread
-            self.update_signal.emit(msgs)
-            self.msleep(1000)
-            print("loading ...")
+            with QMutexLocker(self.mutex):
+                msgs = self.load_msgs()
+                self.update_signal.emit(msgs)
+                self.msleep(1000)
+                print("loading")
 
     def load_msgs(self):
-        # Gọi hàm loadMsgs từ net và trả về kết quả
         self.net.send_to_server("0010", f"{self.session_id}")
         sv_status, sv_data = self.net.receive_from_server()
         if sv_status == "OK":
@@ -37,6 +36,11 @@ class LoadMsgsThread(QThread):
         elif str(sv_data) == "EMPTY":
             return []
         return []
+    
+    def clear(self):
+        with QMutexLocker(self.mutex):
+            self.session_id = None
+            self.quit()
 
 class HomeUI(QtWidgets.QMainWindow):
     def __init__(self, net: Net()):
@@ -45,9 +49,11 @@ class HomeUI(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.net = net
         self.load_msgs_thread = None
+        self.current_session = None
         self.ui.btnLogout.clicked.connect(partial(self.logout, net))
         self.ui.btnSearch.clicked.connect(partial(self.findUsers, net))
         self.ui.inputSearch.textChanged.connect(partial(self.findUsers, net))
+        self.ui.btnAttachFile.clicked.connect(self.showFileDialog)
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -64,6 +70,8 @@ class HomeUI(QtWidgets.QMainWindow):
             self.log_ui.show()
             self.log_ui.set_login_widget()
             self.userData = None
+            self.current_session = None
+            self.ui.msgListWidget.clear()
             self.close()
 
     # Search users
@@ -129,6 +137,7 @@ class HomeUI(QtWidgets.QMainWindow):
         self.ui.chatListWidget.addItem(newItem)
         self.ui.chatListWidget.setItemWidget(newItem, chatItemWidget)
 
+    # Load chat list
     def loadChatList(self, net: Net):
         net.send_to_server("0006", f"{self.userData[0]}")
         sv_status, sv_data = net.receive_from_server()
@@ -143,15 +152,13 @@ class HomeUI(QtWidgets.QMainWindow):
 
     def onClickChatItem(self, item, net, chatsFound):
         index = self.ui.chatListWidget.row(item)
-        # chatName = self.ui.lblChatName1.text()
-        # if (str(chatsFound[index]["session_name"]) != str(chatName)):
+        self.current_session = chatsFound[index]
         self.ui.imgAvatar1.setText(chatsFound[index]["session_name"][:3])
         self.ui.lblChatName1.setText(chatsFound[index]["session_name"])
         self.ui.btnSend.disconnect()
         self.ui.btnSend.clicked.connect(partial(self.sendMsg, net, chatsFound[index]["session_id"]))
         self.ui.msgListWidget.clear()
         if (self.load_msgs_thread and self.load_msgs_thread.isRunning):
-            print("Thread has been deleted.")
             self.clearLoadMsgsThread()
         # Tạo và kích hoạt luồng LoadMsgsThread
         self.load_msgs_thread = LoadMsgsThread(net, chatsFound[index]["session_id"])
@@ -194,7 +201,22 @@ class HomeUI(QtWidgets.QMainWindow):
             txtMsg.setGeometry(QtCore.QRect(50, 20, 391, 31))
             txtMsg.setStyleSheet("background-color: white; border: none;border-radius: 10px; padding: 5px;")
             txtMsg.setObjectName("txtMsg")
-            txtMsg.setText(msg["message_text"])
+            txtMsg.setText(msg["content"])
+            
+            if(msg["type"] == "file"):
+                btnDownload = QtWidgets.QPushButton(chatMsgWidget)
+                btnDownload.setGeometry(QtCore.QRect(446, 24, 31, 23))
+                btnDownload.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
+                btnDownload.setText("")
+                icon9 = QtGui.QIcon()
+                icon9.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/download.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                btnDownload.setIcon(icon9)
+                btnDownload.setObjectName("btnDownload")
+                btnDownload.clicked.connect(partial(self.downloadFile, msg["content"]))
+                txtMsg.setText("Đã gửi một tập tin.")
+                txtMsg.setStyleSheet("background-color: white; border: none;border-radius: 10px; padding: 5px; color: rgb(100, 100, 100); font-style: italic;")
+                
+
             lblSender = QtWidgets.QLabel(chatMsgWidget)
             lblSender.setGeometry(QtCore.QRect(10, 0, 131, 20))
             lblSender.setObjectName("lblSender")
@@ -210,7 +232,19 @@ class HomeUI(QtWidgets.QMainWindow):
             txtMyMsg.setGeometry(QtCore.QRect(110, 10, 391, 31))
             txtMyMsg.setStyleSheet("background-color: rgb(0, 160, 180); border: none;border-radius: 10px; padding: 5px; color: white")
             txtMyMsg.setObjectName("txtMyMsg")
-            txtMyMsg.setText(msg["message_text"])
+            txtMyMsg.setText(msg["content"])
+            if(msg["type"] == "file"):
+                btnDownload = QtWidgets.QPushButton(chatMsgWidget)
+                btnDownload.setGeometry(QtCore.QRect(74, 14, 31, 23))
+                btnDownload.setStyleSheet("border-radius: 5px; background-color: rgb(240, 240, 240);")
+                btnDownload.setText("")
+                icon9 = QtGui.QIcon()
+                icon9.addPixmap(QtGui.QPixmap("./uis\\../asset/icon/download.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                btnDownload.setIcon(icon9)
+                btnDownload.setObjectName("btnDownload")
+                btnDownload.clicked.connect(partial(self.downloadFile, msg["content"]))
+                txtMyMsg.setText("Đã gửi một tập tin.")
+                txtMyMsg.setStyleSheet("background-color: rgb(0, 160, 180); border: none;border-radius: 10px; padding: 5px; color: rgb(250, 250, 250); font-style: italic;")
 
         self.ui.msgListWidget.addItem(newItem)
         self.ui.msgListWidget.setItemWidget(newItem, chatMsgWidget)
@@ -226,3 +260,51 @@ class HomeUI(QtWidgets.QMainWindow):
             else:
                 pass
             self.ui.inputMsg.setText("")
+
+    def showFileDialog(self):
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        file_dialog = QtWidgets.QFileDialog()
+        file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
+        file_dialog.setNameFilter('All Files (*)')
+        file_dialog.setOptions(options)
+
+        if file_dialog.exec_() == QtWidgets.QFileDialog.Accepted:
+            self.selected_file_path = file_dialog.selectedFiles()[0]
+            self.sendFile(self.selected_file_path)
+
+    def sendFile(self, file_path):
+        file_name = os.path.basename(file_path)
+        file_size = os.path.getsize(file_path)
+        print(file_size)
+        data = f"{file_name}|{file_size}|{self.userData[0]}|{self.current_session['session_id']}"
+        self.net.send_to_server("0020", data)
+        
+        with open(file_path, 'rb') as file:
+            for data in iter(lambda: file.read(1024), b''):
+                self.net.client_socket.send(data)
+
+        sv_status, sv_data = self.net.receive_from_server()
+        if (sv_status == "OK"):
+            print(sv_data)
+            pass
+        else:
+            pass
+
+    def downloadFile(self, file_name):
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontUseNativeDialog
+        folder_path = QtWidgets.QFileDialog.getExistingDirectory(self, "Chọn thư mục", options=options)
+        
+        self.net.send_to_server("0021", file_name)
+        f_name, f_size = self.net.client_socket.recv(1024).decode().split("|")
+        
+        if folder_path:
+            received_data = 0
+            with open(os.path.join(folder_path, f_name), "wb") as file:
+                while received_data < int(f_size):
+                    data = self.net.client_socket.recv(1024)
+                    file.write(data)
+                    received_data += len(data)
+        
+        

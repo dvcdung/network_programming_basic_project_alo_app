@@ -21,7 +21,28 @@ class DB:
         except mysql.connector.Error as error:
             print("Connection error:", error)
         return None
-        
+    
+    def insert(self, query, params):
+        connection = self.connect_db()
+        if (connection):   
+            cursor = connection.cursor()
+            cursor.execute(query, params)
+            connection.commit()
+            cursor.close()
+            connection.close()
+    
+    def select(self, query, params):
+        connection = self.connect_db()
+        if (connection):
+            cursor = connection.cursor()
+            if params: cursor.execute(query, params)
+            else: cursor.execute(query)
+            records = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return records
+        else: return None
+
     def getUser(self, username, password):
         connection = self.connect_db()
         if (connection):
@@ -46,15 +67,9 @@ class DB:
             return records
         else: return None
 
-
     def insertUser(self, user):
-        connection = self.connect_db()
-        if (connection):
-            cursor = connection.cursor()
-            query = "insert into users (username, password, display_name, phone) values (%s, %s, %s, %s)"
-            val = [ (user[0], user[1], user[2], user[3]) ]
-            cursor.executemany(query, val)
-            connection.commit()
+        query = "insert into users (username, password, display_name, phone) values (%s, %s, %s, %s)"
+        self.insert(query, (user[0], user[1], user[2], user[3]))
 
     def findUsers(self, key, user_id):
         connection = self.connect_db()
@@ -131,12 +146,17 @@ class DB:
         connection = self.connect_db()
         if (connection):
             cursor = connection.cursor()
-            query = """SELECT M.*, U.display_name as sender_name 
-                    FROM MESSAGES M 
-                        inner join users U on M.sender_id = U.user_id 
-                    WHERE SESSION_ID = %s
-                    ORDER BY M.sent_at ASC"""
-            cursor.execute(query, (session_id, ))
+            query = """SELECT 'msg' as type, m.message_id as id, m.message_text as content,m.sender_id, u.display_name as sender_name, m.session_id, m.sent_at
+                    FROM messages as m 
+                        inner join users u on m.sender_id = u.user_id
+                    WHERE m.session_id = %s
+                    UNION
+                    SELECT 'file' as type, r.file_id as id, r.file_name as content, r.sender_id, u.display_name as sender_name, r.session_id, r.sent_at
+                    FROM resources r
+                        inner join users u on r.sender_id = u.user_id
+                    WHERE r.session_id = %s
+                    ORDER BY sent_at ASC;"""
+            cursor.execute(query, (session_id, session_id))
             records = cursor.fetchall()
             cursor.close()
             connection.close()
@@ -144,14 +164,6 @@ class DB:
         else: return None
 
     def insertMsg(self, message_text, sender_id, session_id):
-        connection = self.connect_db()
-        if (connection):
-            cursor = connection.cursor()
-            query = f"INSERT INTO `messages` (`message_text`, `sender_id`, `session_id`) VALUES (%s, %s, %s);"
-            cursor.execute(query, (message_text, sender_id, session_id))
-            connection.commit()
-            cursor.close()
-            connection.close()
-
-db = DB()
-db.insertMsg("Ê bạn ơi", 2, 43)
+        query = f"INSERT INTO `messages` (`message_text`, `sender_id`, `session_id`) VALUES (%s, %s, %s);"
+        self.insert(query, (message_text, sender_id, session_id))
+    

@@ -66,6 +66,7 @@ class LogUI(QtWidgets.QMainWindow):
             self.close()
             userData = sv_data.split("|")
             self.home_ui.userData = userData
+            print(userData)
             self.home_ui.ui.lblDisplayName.setText(userData[3])
             self.home_ui.ui.imgAvatar.setText(userData[3].strip()[:3])
             self.home_ui.loadChatList(net)
