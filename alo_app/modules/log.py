@@ -66,7 +66,6 @@ class LogUI(QtWidgets.QMainWindow):
             self.close()
             userData = sv_data.split("|")
             self.home_ui.userData = userData
-            print(userData)
             self.home_ui.ui.lblDisplayName.setText(userData[3])
             self.home_ui.ui.imgAvatar.setText(userData[3].strip()[:3])
             self.home_ui.loadChatList(net)
@@ -84,3 +83,11 @@ class LogUI(QtWidgets.QMainWindow):
         elif (password != repassword):
             return (False, "The passwords you entered are not the same!")
         return (True, "")
+    
+    def keyPressEvent(self, event):
+        key = event.key()
+        if key == 16777220:
+            if self.ui.loginWidget.isVisible() == True:
+                self.ui.btnLogin.click()              
+            else:
+                self.ui.btnRegister.click()

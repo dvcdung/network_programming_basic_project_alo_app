@@ -15,7 +15,7 @@ class Ui_home(object):
     def setupUi(self, home):
         home.setObjectName("home")
         home.setEnabled(True)
-        home.resize(741, 481)
+        home.resize(740, 481)
         home.setAutoFillBackground(False)
         home.setStyleSheet("background: rgb(255, 255, 255);")
         self.chatListWidget = QtWidgets.QListWidget(home)

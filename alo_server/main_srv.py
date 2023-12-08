@@ -110,7 +110,7 @@ def handle_client(client_socket):
                     with open(f"./server_data/{file_name}", 'rb') as file:
                         for data in iter(lambda: file.read(1024), b''):
                             client_socket.send(data)
-
+                
                     
     except ConnectionResetError:
         for username, (user_socket, _) in list(onlineUsers.items()):

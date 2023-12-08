@@ -1,11 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from uis.home_ui import Ui_home
 from networks.app_network import Net
+from modules.pieces.emojis import Emojis
 from functools import partial
 import os
 import json
         
-from PyQt5.QtCore import QThread, pyqtSignal, QMutexLocker, QMutex
+from PyQt5.QtCore import QThread, pyqtSignal
 
 class LoadMsgsThread(QThread):
     update_signal = pyqtSignal(list)
@@ -14,15 +15,12 @@ class LoadMsgsThread(QThread):
         super(LoadMsgsThread, self).__init__()
         self.net = net
         self.session_id = session_id
-        self.mutex = QMutex()
 
     def run(self):
         while self.session_id:
-            with QMutexLocker(self.mutex):
-                msgs = self.load_msgs()
-                self.update_signal.emit(msgs)
-                self.msleep(1000)
-                print("loading")
+            msgs = self.load_msgs()
+            self.update_signal.emit(msgs)
+            self.msleep(1000)
 
     def load_msgs(self):
         self.net.send_to_server("0010", f"{self.session_id}")
@@ -36,17 +34,13 @@ class LoadMsgsThread(QThread):
         elif str(sv_data) == "EMPTY":
             return []
         return []
-    
-    def clear(self):
-        with QMutexLocker(self.mutex):
-            self.session_id = None
-            self.quit()
 
 class HomeUI(QtWidgets.QMainWindow):
     def __init__(self, net: Net()):
         super().__init__()
         self.ui = Ui_home()
         self.ui.setupUi(self)
+        self.emojis = Emojis(self)
         self.net = net
         self.load_msgs_thread = None
         self.current_session = None
@@ -54,6 +48,7 @@ class HomeUI(QtWidgets.QMainWindow):
         self.ui.btnSearch.clicked.connect(partial(self.findUsers, net))
         self.ui.inputSearch.textChanged.connect(partial(self.findUsers, net))
         self.ui.btnAttachFile.clicked.connect(self.showFileDialog)
+        self.ui.btnIcon.clicked.connect(lambda: self.emojis.toggleEmojisWidget())
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -65,12 +60,12 @@ class HomeUI(QtWidgets.QMainWindow):
         net.send_to_server("0003", username)
         sv_status, sv_data = net.receive_from_server()
         if (sv_status == "OK"):
-            if (self.load_msgs_thread):
-                self.clearLoadMsgsThread()
             self.log_ui.show()
             self.log_ui.set_login_widget()
             self.userData = None
             self.current_session = None
+            if (self.load_msgs_thread):
+                self.clearLoadMsgsThread()
             self.ui.msgListWidget.clear()
             self.close()
 
@@ -83,11 +78,10 @@ class HomeUI(QtWidgets.QMainWindow):
             if (sv_status == "OK"):
                 usersFound = json.loads(sv_data)
                 self.ui.chatListWidget.clear()
-                for userFound in usersFound:
-                    userFound = {"session_id": userFound["user_id"],
-                                 "session_name": userFound["display_name"],
-                                 "is_a_friend": userFound["is_a_friend"]}
-                    self.add_chat_item_widget(userFound, net)
+                usersFound = [{"session_id": userFound["user_id"],
+                            "session_name": userFound["display_name"],
+                            "is_a_friend": userFound["is_a_friend"]} for userFound in usersFound]
+                self.setChatList(usersFound)
             elif (sv_data == "EMPTY"):
                 self.ui.chatListWidget.clear()
         else:
@@ -99,6 +93,24 @@ class HomeUI(QtWidgets.QMainWindow):
         sv_status, _ = net.receive_from_server()
         if (sv_status):
             self.findUsers(net)
+
+    # Load chat list
+    def loadChatList(self, net: Net):
+        net.send_to_server("0006", f"{self.userData[0]}")
+        sv_status, sv_data = net.receive_from_server()
+        if (sv_status == "OK"):
+            chatsFound = json.loads(sv_data)
+            self.setChatList(chatsFound)
+        elif (sv_data == "EMPTY"):
+            self.ui.chatListWidget.clear()
+
+    def setChatList(self, chatsFound):
+        self.ui.chatListWidget.clear()
+        if hasattr(self, 'chatListItemClickedConnection'):
+            self.ui.chatListWidget.itemClicked.disconnect(self.chatListItemClickedConnection)
+        for chatFound in chatsFound:
+            self.add_chat_item_widget(chatFound, self.net)
+        self.chatListItemClickedConnection = self.ui.chatListWidget.itemClicked.connect(lambda item: self.onClickChatItem(item, self.net, chatsFound))
 
     def add_chat_item_widget(self, xfound, net: Net):
         newItem = QtWidgets.QListWidgetItem(self.ui.chatListWidget)
@@ -137,33 +149,22 @@ class HomeUI(QtWidgets.QMainWindow):
         self.ui.chatListWidget.addItem(newItem)
         self.ui.chatListWidget.setItemWidget(newItem, chatItemWidget)
 
-    # Load chat list
-    def loadChatList(self, net: Net):
-        net.send_to_server("0006", f"{self.userData[0]}")
-        sv_status, sv_data = net.receive_from_server()
-        if (sv_status == "OK"):
-            chatsFound = json.loads(sv_data)
-            self.ui.chatListWidget.clear()
-            for chatFound in chatsFound:
-                self.add_chat_item_widget(chatFound, net)
-            self.ui.chatListWidget.itemClicked.connect(lambda item: self.onClickChatItem(item, net, chatsFound))
-        elif (sv_data == "EMPTY"):
-            self.ui.chatListWidget.clear()
-
     def onClickChatItem(self, item, net, chatsFound):
         index = self.ui.chatListWidget.row(item)
-        self.current_session = chatsFound[index]
-        self.ui.imgAvatar1.setText(chatsFound[index]["session_name"][:3])
-        self.ui.lblChatName1.setText(chatsFound[index]["session_name"])
-        self.ui.btnSend.disconnect()
-        self.ui.btnSend.clicked.connect(partial(self.sendMsg, net, chatsFound[index]["session_id"]))
-        self.ui.msgListWidget.clear()
-        if (self.load_msgs_thread and self.load_msgs_thread.isRunning):
-            self.clearLoadMsgsThread()
-        # Tạo và kích hoạt luồng LoadMsgsThread
-        self.load_msgs_thread = LoadMsgsThread(net, chatsFound[index]["session_id"])
-        self.load_msgs_thread.update_signal.connect(partial(self.loadMsgs, net))
-        self.load_msgs_thread.start()
+        if chatsFound[index]["is_a_friend"] == 1:
+            self.current_session = chatsFound[index]
+            self.ui.imgAvatar1.setText(chatsFound[index]["session_name"][:3])
+            self.ui.lblChatName1.setText(chatsFound[index]["session_name"])
+            self.ui.btnSend.disconnect()
+            self.ui.btnSend.clicked.connect(partial(self.sendMsg, net, chatsFound[index]["session_id"]))
+            self.ui.msgListWidget.clear()
+            if (self.load_msgs_thread and self.load_msgs_thread.isRunning):
+                self.clearLoadMsgsThread()
+            # Tạo và kích hoạt luồng LoadMsgsThread
+            self.load_msgs_thread = LoadMsgsThread(net, chatsFound[index]["session_id"])
+            self.load_msgs_thread.update_signal.connect(partial(self.loadMsgs, net))
+            self.load_msgs_thread.start()
+        
 
     def clearLoadMsgsThread(self):
         self.load_msgs_thread.terminate()
@@ -250,7 +251,12 @@ class HomeUI(QtWidgets.QMainWindow):
         self.ui.msgListWidget.setItemWidget(newItem, chatMsgWidget)
         self.ui.msgListWidget.scrollToBottom()
 
+    # On click emoji button
+    def on_emoji_click(self, emoji):
+        self.ui.inputMsg.insert(emoji)
+
     def sendMsg(self, net: Net, session_id):
+        self.emojis.toggleEmojisWidget()
         msg = self.ui.inputMsg.text()
         if (msg):
             net.send_to_server("0011", f"{msg}|{self.userData[0]}|{session_id}")
@@ -276,7 +282,6 @@ class HomeUI(QtWidgets.QMainWindow):
     def sendFile(self, file_path):
         file_name = os.path.basename(file_path)
         file_size = os.path.getsize(file_path)
-        print(file_size)
         data = f"{file_name}|{file_size}|{self.userData[0]}|{self.current_session['session_id']}"
         self.net.send_to_server("0020", data)
         

@@ -1,0 +1,26 @@
+from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtCore import QTimer
+import sys
+
+class MessagePopup(QMessageBox):
+    def __init__(self, parent=None):
+        super(MessagePopup, self).__init__(parent)
+        self.setWindowTitle("Thông báo")
+        self.setIcon(QMessageBox.Information)
+
+        # Thêm nội dung và cài đặt kiểu thông báo
+        self.setText("Nội dung thông báo ở đây")
+
+        # Tự động đóng sau 3 giây
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.close)
+        self.timer.start(3000)  # 3000 milliseconds = 3 seconds
+
+def main():
+    app = QApplication(sys.argv)
+    message_popup = MessagePopup()
+    message_popup.exec_()
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
