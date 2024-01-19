@@ -98,6 +98,43 @@ class DB:
             return records
         else: return None
 
+    def getFriends(self, user_id):
+        connection = self.connect_db()
+        if (connection):
+            cursor = connection.cursor()
+            query = f"SELECT P.SESSION_ID FROM PARTICIPATIONS P INNER JOIN CHAT_SESSIONS C ON P.session_id = C.session_id WHERE USER_ID = {user_id} AND C.SESSION_NAME = 'individual'"
+            cursor.execute(query)
+            session_ids = [row[0] for row in cursor.fetchall()]
+            if (session_ids):          
+                query = "SELECT P.USER_ID, U.DISPLAY_NAME FROM PARTICIPATIONS P INNER JOIN USERS U ON P.USER_ID = U.USER_ID WHERE SESSION_ID = %s AND P.USER_ID <> %s"
+                frientsFound = []
+                for session_id in session_ids:
+                    cursor.execute(query, (session_id, user_id))
+                    result = cursor.fetchall()
+                    frientsFound.append(result[0])
+            cursor.close()
+            connection.close()
+            return frientsFound
+        else: return None
+
+    def createGroup(self, group_name, selected_friends):
+        connection = self.connect_db()
+        if (connection):
+            cursor = connection.cursor()
+            query = "INSERT INTO chat_sessions (session_name, folder_name) VALUES (%s, MD5(%s));"
+            val = [(group_name, str(datetime.now()))]
+            cursor.executemany(query, val)
+            connection.commit()
+            
+            session_id = cursor.lastrowid
+
+            query1 = "INSERT INTO `participations` (`user_id`, `session_id`) VALUES (%s, %s);"
+            selected_friends = [(item, session_id) for item in selected_friends]
+            cursor.executemany(query1, selected_friends)
+            connection.commit()
+            cursor.close()
+            connection.close()
+
     def addFriend(self, user_id_1, user_id_2):
         connection = self.connect_db()
         if (connection):

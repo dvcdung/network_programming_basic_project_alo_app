@@ -2,6 +2,7 @@ import socket
 
 
 class Net():
+    #192.168.223.228
     SERVER_IP = "127.0.0.1"
     SERVER_PORT = 12345
     client_socket = None

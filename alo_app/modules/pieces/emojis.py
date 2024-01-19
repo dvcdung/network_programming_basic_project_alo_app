@@ -20,7 +20,7 @@ class Emojis(QtWidgets.QWidget):
             button.clicked.connect(partial(home.on_emoji_click, emoji))
             button.setFixedSize(30, 30)
             button.setStyleSheet("border: 1px solid rgb(230, 230, 230); font-size: 20px")
-            self.emojisGridLayout.addWidget(button, row, col)
+            self.emojisGridLayout.addWidget(button, row, col    )
             col += 1
             if col > 5:
                 col = 0
@@ -32,3 +32,7 @@ class Emojis(QtWidgets.QWidget):
     def toggleEmojisWidget(self):
         if self.emojisWidget.isHidden(): self.emojisWidget.show()  
         else: self.emojisWidget.hide()
+        
+    def closeEmojisWidget(self):
+        if not self.emojisWidget.isHidden():
+            self.emojisWidget.hide()

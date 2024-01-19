@@ -1,54 +1,34 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from uis.home_ui import Ui_home
-from networks.app_network import Net
-from modules.pieces.emojis import Emojis
 from functools import partial
 import os
 import json
-        
-from PyQt5.QtCore import QThread, pyqtSignal
+import sounddevice as sd
+import zlib
+import pickle
 
-class LoadMsgsThread(QThread):
-    update_signal = pyqtSignal(list)
-
-    def __init__(self, net, session_id):
-        super(LoadMsgsThread, self).__init__()
-        self.net = net
-        self.session_id = session_id
-
-    def run(self):
-        while self.session_id:
-            msgs = self.load_msgs()
-            self.update_signal.emit(msgs)
-            self.msleep(1000)
-
-    def load_msgs(self):
-        self.net.send_to_server("0010", f"{self.session_id}")
-        sv_status, sv_data = self.net.receive_from_server()
-        if sv_status == "OK":
-            try:
-                msgs = json.loads(sv_data)
-                return msgs
-            except:
-                pass
-        elif str(sv_data) == "EMPTY":
-            return []
-        return []
+from uis.home_ui import Ui_home
+from networks.app_network import Net
+from modules.pieces.emojis import Emojis
+from modules.pieces.front_layer import FrontLayer
+from modules.home.load_msgs_thread import LoadMsgsThread
 
 class HomeUI(QtWidgets.QMainWindow):
     def __init__(self, net: Net()):
         super().__init__()
         self.ui = Ui_home()
         self.ui.setupUi(self)
-        self.emojis = Emojis(self)
         self.net = net
         self.load_msgs_thread = None
         self.current_session = None
+        self.frontLayer = FrontLayer(self)
         self.ui.btnLogout.clicked.connect(partial(self.logout, net))
+        self.ui.btnAddGroup.clicked.connect(lambda: self.frontLayer.showFrontLayer())
         self.ui.btnSearch.clicked.connect(partial(self.findUsers, net))
         self.ui.inputSearch.textChanged.connect(partial(self.findUsers, net))
         self.ui.btnAttachFile.clicked.connect(self.showFileDialog)
         self.ui.btnIcon.clicked.connect(lambda: self.emojis.toggleEmojisWidget())
+        self.ui.btnCall.clicked.connect(lambda: self.callVoice())
+        self.emojis = Emojis(self)
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -86,6 +66,8 @@ class HomeUI(QtWidgets.QMainWindow):
                 self.ui.chatListWidget.clear()
         else:
             self.loadChatList(net)
+
+    # Create group
 
     # Add new chat
     def addFriend(self, net: Net, user_id): 
@@ -164,7 +146,6 @@ class HomeUI(QtWidgets.QMainWindow):
             self.load_msgs_thread = LoadMsgsThread(net, chatsFound[index]["session_id"])
             self.load_msgs_thread.update_signal.connect(partial(self.loadMsgs, net))
             self.load_msgs_thread.start()
-        
 
     def clearLoadMsgsThread(self):
         self.load_msgs_thread.terminate()
@@ -256,7 +237,7 @@ class HomeUI(QtWidgets.QMainWindow):
         self.ui.inputMsg.insert(emoji)
 
     def sendMsg(self, net: Net, session_id):
-        self.emojis.toggleEmojisWidget()
+        self.emojis.closeEmojisWidget()
         msg = self.ui.inputMsg.text()
         if (msg):
             net.send_to_server("0011", f"{msg}|{self.userData[0]}|{session_id}")
@@ -311,5 +292,20 @@ class HomeUI(QtWidgets.QMainWindow):
                     data = self.net.client_socket.recv(1024)
                     file.write(data)
                     received_data += len(data)
-        
-        
+    
+    def callVoice(self):
+        fs = 44100  # Tần số mẫu (Hz)
+        channels = 2  # Số kênh âm thanh
+
+        self.net.send_to_server("0030", "")
+
+        # Ghi âm từ client và gửi đến server
+        with sd.InputStream(callback=self.send_audio, channels=channels, samplerate=fs):
+            print("Client đang gửi âm thanh...")
+            input("Nhấn Enter để dừng...")
+            print("Đã dừng.")
+
+    # Hàm để gửi âm thanh đến server
+    def send_audio(self, indata, frames, time, status):
+        self.net.client_socket.sendall(zlib.compress(pickle.dumps(indata.copy())))
+

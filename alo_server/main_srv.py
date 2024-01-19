@@ -3,6 +3,9 @@ import socket
 import threading
 import mysql
 import json
+import sounddevice as sd
+import zlib
+import pickle
 from database import DB
 from services.file_service import FileService
 
@@ -70,6 +73,27 @@ def handle_client(client_socket):
                             client_socket.send(f"OK:{json.dumps(chatsFound)}".encode())
                     except Exception:
                         client_socket.send("ER:Failed".encode())
+                elif id == "0007": # Get Friends
+                    user_id = data
+                    try:
+                        frientsFound = db.getFriends(user_id)
+                        if (not frientsFound):
+                            client_socket.send("ER:EMPTY".encode())
+                        else:
+                            frientsFound = [{"user_id": row[0],  "display_name": row[1]} for row in frientsFound]
+                            print(frientsFound)
+                            client_socket.send(f"OK:{json.dumps(frientsFound)}".encode())
+                    except Exception:
+                        client_socket.send("ER:Failed".encode())
+                elif id == "0008": # Create group
+                    group_name, selected_friends = data.split("|")
+                    selected_friends = json.loads(selected_friends)
+                    try:
+                        db.createGroup(group_name, selected_friends)
+                        client_socket.send("OK:Create group successfully!".encode())
+                    except Exception as e:
+                        print(e)
+                        client_socket.send("ER:Failed".encode())
                 elif id == "0010": # get Msgs
                     session_id = data
                     try:
@@ -110,7 +134,17 @@ def handle_client(client_socket):
                     with open(f"./server_data/{file_name}", 'rb') as file:
                         for data in iter(lambda: file.read(1024), b''):
                             client_socket.send(data)
-                
+                elif id == "0030":
+                    # Tham số âm thanh
+                    fs = 44100  # Tần số mẫu (Hz)
+                    channels = 2  # Số kênh âm thanh
+                    # Luồng lắng nghe và phát lại âm thanh
+                    audio_thread = threading.Thread(target=lambda: sd.InputStream(callback=lambda indata, frames, time, status: play_audio(client_socket, indata, frames, time, status), channels=channels, samplerate=fs))
+                    audio_thread.start()
+                    # Đợi client gửi âm thanh
+                    input("Nhấn Enter để dừng...")
+                    # Dừng luồng âm thanh
+                    audio_thread.join()
                     
     except ConnectionResetError:
         for username, (user_socket, _) in list(onlineUsers.items()):
@@ -120,6 +154,10 @@ def handle_client(client_socket):
                 break
     except mysql.connector.errors.IntegrityError:
         client_socket.send("ER:Failed".encode())
+
+# Hàm để phát lại âm thanh
+def play_audio(client_socket, indata, frames, time, status):
+    client_socket.sendall(zlib.compress(pickle.dumps(indata.copy())))
 
 def server_main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
